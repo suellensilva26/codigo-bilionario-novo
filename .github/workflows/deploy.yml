@@ -21,6 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -30,7 +33,10 @@ jobs:
         run: npm ci
 
       - name: Build (GitHub Pages base path)
-        run: npm run build -- --base=/codigo-bilionario-novo/
+        run: npm run build:gh
+
+      - name: Add SPA fallback (404.html)
+        run: cp dist/index.html dist/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
