@@ -1,7 +1,13 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Courses from './pages/Courses'
 import CourseDetail from './pages/CourseDetail'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
+import Subscription from './pages/Subscription'
+import NotFound from './pages/NotFound'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
   console.log('🎯 App carregado - PROJETO NOVO FUNCIONANDO!')
@@ -9,9 +15,34 @@ function App() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Routes>
-        <Route path="/" element={<Courses />} />
+        {/* Públicas */}
+        <Route path="/" element={<Navigate to="/courses" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/courses" element={<Courses />} />
-        <Route path="/courses/:courseId" element={<CourseDetail />} />
+        <Route path="/course/:courseId" element={<CourseDetail />} />
+
+        {/* Privadas */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/subscription"
+          element={
+            <ProtectedRoute>
+              <Subscription />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   )
