@@ -11,6 +11,7 @@ import Admin from './pages/Admin'
 import Profile from './pages/Profile'
 import Landing from './pages/Landing'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import Layout from './components/layout/Layout'
 
 function App() {
   console.log('🎯 App carregado - PROJETO NOVO FUNCIONANDO!')
@@ -20,18 +21,18 @@ function App() {
       <Routes>
         {/* Públicas */}
         <Route path="/" element={<Navigate to="/courses" replace />} />
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/course/:courseId" element={<CourseDetail />} />
+        <Route path="/landing" element={<Layout><Landing /></Layout>} />
+        <Route path="/login" element={<Layout><Login /></Layout>} />
+        <Route path="/register" element={<Layout><Register /></Layout>} />
+        <Route path="/courses" element={<Layout><Courses /></Layout>} />
+        <Route path="/course/:courseId" element={<Layout><CourseDetail /></Layout>} />
 
         {/* Privadas */}
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Layout><Dashboard /></Layout>
             </ProtectedRoute>
           }
         />
@@ -58,13 +59,13 @@ function App() {
           path="/subscription"
           element={
             <ProtectedRoute>
-              <Subscription />
+              <Layout><Subscription /></Layout>
             </ProtectedRoute>
           }
         />
 
         {/* 404 */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Layout><NotFound /></Layout>} />
       </Routes>
     </div>
   )

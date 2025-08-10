@@ -11,14 +11,16 @@ import {
   Crown,
   Book,
   BarChart3,
-  CreditCard
+  CreditCard,
+  Home,
+  Shield
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
-  const { user, logout } = useAuthStore()
+  const { user, logout, isAdmin } = useAuthStore()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -28,9 +30,11 @@ const Header = () => {
   }
 
   const navigation = [
+    { name: 'Início', href: '/landing', icon: Home },
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
     { name: 'Cursos', href: '/courses', icon: Book },
     { name: 'Assinatura', href: '/subscription', icon: CreditCard },
+    ...(isAdmin?.() ? [{ name: 'Admin', href: '/admin', icon: Shield }] : [])
   ]
 
   const isActivePath = (path) => {
