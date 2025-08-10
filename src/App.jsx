@@ -7,6 +7,9 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Subscription from './pages/Subscription'
 import NotFound from './pages/NotFound'
+import Admin from './pages/Admin'
+import Profile from './pages/Profile'
+import Landing from './pages/Landing'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
@@ -17,6 +20,7 @@ function App() {
       <Routes>
         {/* Públicas */}
         <Route path="/" element={<Navigate to="/courses" replace />} />
+        <Route path="/landing" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/courses" element={<Courses />} />
@@ -28,6 +32,24 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
             </ProtectedRoute>
           }
         />
