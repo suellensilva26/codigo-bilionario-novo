@@ -1,17 +1,21 @@
 export const runtime = 'nodejs';
+export const config = { runtime: 'nodejs' };
+export const preferredRegion = 'gru1';
 
 export default async function handler(req, res) {
   try {
-    const key = process.env.STRIPESECRETKEY;
-    if (!key) throw new Error('STRIPESECRETKEY missing');
+    const key = process.env.STRIPESECRETKEY || '';
+    if (!key || !key.startsWith('sk_')) throw new Error('STRIPESECRETKEY missing or invalid');
 
     const r = await fetch('https://api.stripe.com/v1/balance', {
       headers: { Authorization: `Bearer ${key}` },
     });
     const text = await r.text();
-    res.status(r.status).setHeader('content-type', 'application/json').send(text);
+    let data; try { data = JSON.parse(text); } catch { data = { raw: text }; }
+    if (!r.ok) throw new Error(data?.error?.message || `HTTP ${r.status}`);
+    res.status(200).json({ ok: true, source: 'fetch', balance: data });
   } catch (e) {
-    res.status(500).json({ ok: false, error: e?.message || String(e), hasKey: !!process.env.STRIPESECRETKEY });
+    res.status(500).json({ ok: false, error: e?.message || String(e) });
   }
 }
 import Stripe from 'stripe';
