@@ -8,9 +8,10 @@
     "build": "vite build",
     "build:gh": "vite build --base=/codigo-bilionario-novo/",
     "preview": "vite preview",
-    "server": "node server/index.js",
-    "server:dev": "nodemon --watch server server/index.js",
-    "dev:all": "concurrently -k npm:server:dev vite"
+    "server": "node server/index.cjs",
+    "server:dev": "nodemon --watch server server/index.cjs",
+    "dev:all": "concurrently -k \"npm:server:dev\" vite",
+    "check:connections": "node scripts/check-connections.cjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.9.0",
