@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+export const preferredRegion = 'gru1';
 import { MongoClient } from 'mongodb';
 
 export default async function handler(_req, res) {

@@ -1,4 +1,5 @@
 export const runtime = 'nodejs';
+export const preferredRegion = 'gru1';
 
 import Stripe from 'stripe';
 
