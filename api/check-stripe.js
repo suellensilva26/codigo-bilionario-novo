@@ -1,40 +1,37 @@
 export const runtime = 'nodejs';
-export const config = { runtime: 'nodejs' };
-export const preferredRegion = 'gru1';
+export const preferredRegion = 'gru1'; // opcional (São Paulo)
 
 export default async function handler(req, res) {
   try {
-    const key = process.env.STRIPESECRETKEY || '';
-    if (!key || !key.startsWith('sk_')) throw new Error('STRIPESECRETKEY missing or invalid');
+    const key = process.env.STRIPESECRETKEY;
+    if (!key || !key.startsWith('sk_')) {
+      throw new Error('STRIPESECRETKEY missing or invalid');
+    }
 
+    // Chama a API da Stripe direto (sem SDK)
     const r = await fetch('https://api.stripe.com/v1/balance', {
-      headers: { Authorization: `Bearer ${key}` },
+      headers: { Authorization: `Bearer ${key}` }
     });
+
     const text = await r.text();
+    if (!r.ok) {
+      return res.status(r.status).json({ ok: false, error: `Stripe HTTP ${r.status}: ${text}` });
+    }
 
-    // Resposta usando Node http.ServerResponse (sem Express)
-    res.statusCode = r.status;
-    res.setHeader('content-type', 'application/json');
-    res.end(text);
+    let balance;
+    try { balance = JSON.parse(text); }
+    catch { return res.status(500).json({ ok: false, error: `Stripe returned non-JSON: ${text}` }); }
+
+    return res.status(200).json({ ok: true, source: 'fetch', balance });
   } catch (e) {
-    const body = JSON.stringify({ ok: false, error: e?.message || String(e) });
-    res.statusCode = 500;
-    res.setHeader('content-type', 'application/json');
-    res.end(body);
+    return res.status(500).json({
+      ok: false,
+      error: e?.message || String(e),
+      diag: {
+        node: process.version,
+        region: process.env.VERCEL_REGION || null,
+        hasKey: !!process.env.STRIPESECRETKEY
+      }
+    });
   }
 }
-import Stripe from 'stripe';
-
-export default async function handler(_req, res) {
-  try {
-    const key = process.env.STRIPESECRETKEY || process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SK || process.env.STRIPE_KEY;
-    if (!key) throw new Error('STRIPESECRETKEY ausente');
-    const stripe = new Stripe(key);
-    const balance = await stripe.balance.retrieve();
-    res.status(200).json({ ok: true, balance });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message || String(e) });
-  }
-}
-
-
