@@ -11,7 +11,8 @@
     "server": "node server/index.cjs",
     "server:dev": "nodemon --watch server server/index.cjs",
     "dev:all": "concurrently -k \"npm:server:dev\" vite",
-    "check:connections": "node scripts/check-connections.cjs"
+    "check:connections": "node scripts/check-connections.cjs",
+    "check:all": "node scripts/check-all.cjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^3.9.0",
