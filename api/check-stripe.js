@@ -11,11 +11,16 @@ export default async function handler(req, res) {
       headers: { Authorization: `Bearer ${key}` },
     });
     const text = await r.text();
-    let data; try { data = JSON.parse(text); } catch { data = { raw: text }; }
-    if (!r.ok) throw new Error(data?.error?.message || `HTTP ${r.status}`);
-    res.status(200).json({ ok: true, source: 'fetch', balance: data });
+
+    // Resposta usando Node http.ServerResponse (sem Express)
+    res.statusCode = r.status;
+    res.setHeader('content-type', 'application/json');
+    res.end(text);
   } catch (e) {
-    res.status(500).json({ ok: false, error: e?.message || String(e) });
+    const body = JSON.stringify({ ok: false, error: e?.message || String(e) });
+    res.statusCode = 500;
+    res.setHeader('content-type', 'application/json');
+    res.end(body);
   }
 }
 import Stripe from 'stripe';
